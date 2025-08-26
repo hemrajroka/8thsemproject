@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Register</title>
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+
+<body>
+    <div class="overlay"></div>
+    <div class="login-card">
+        <h1>Admin Registration</h1>
+        <form id="admin-register-form" action="admin_register.php" method="POST">
+            <input type="text" name="name" placeholder="Enter your name" required>
+            <input type="email" name="email" placeholder="Enter your email" required>
+            <input type="password" name="password" placeholder="Enter your password" required>
+            <button type="submit">Register</button>
+        </form>
+        <p class="login-link">
+            Already have an account? 
+            <a href="admin_login.html">Login</a>
+        </p>
+    </div>
+    <script>
+        document.getElementById("admin-register-form").addEventListener("submit", function (event) {
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const errorMessage = document.getElementById("error-message");
+
+            // Clear previous error messages
+            errorMessage.textContent = "";
+
+            // Name Validation
+            if (name === "") {
+                errorMessage.textContent = "Name is required.";
+                event.preventDefault();
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                errorMessage.textContent = "Please enter a valid email address.";
+                event.preventDefault();
+                return;
+            }
+
+            if (password.length < 6) {
+                errorMessage.textContent = "Password must be at least 6 characters long.";
+                event.preventDefault();
+                return;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="admin_style.css">
+</head>
+
+<body>
+    <div class="overlay"></div>
+    <div class="login-card">
+        <h1>Admin Login</h1>
+        <form id="admin-login-form" action="admin_login.php" method="POST">
+            <input type="email" name="email" id="login-email" placeholder="Enter your email" required>
+            <input type="password" name="password" id="login-password" placeholder="Enter your password" required>
+            <button type="submit">Login</button>
+        </form>
+   
+        <p id="login-error-message" style="color: red; text-align: center; margin-top: 10px;"></p>
+    </div>
+    <script>
+      
+        document.getElementById("admin-login-form").addEventListener("submit", function (event) {
+            const email = document.getElementById("login-email").value.trim();
+            const password = document.getElementById("login-password").value.trim();
+            const errorMessage = document.getElementById("login-error-message");
+
+           
+            errorMessage.textContent = "";
+
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                errorMessage.textContent = "Please enter a valid email address.";
+                event.preventDefault();
+                return;
+            }
+
+           
+            if (password === "") {
+                errorMessage.textContent = "Password is required.";
+                event.preventDefault();
+                return;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <style>
+   
+    body, h1, h2, table, th, td, button, a {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f6fa;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #273c75;
+      color: #fff;
+      padding: 24px 36px;
+      box-shadow: 0 2px 6px rgba(39, 60, 117, 0.10);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-left h1 {
+      font-weight: 700;
+      font-size: 1.8rem;
+      user-select: none;
+    }
+
+ 
+
+    #notify-count {
+      position: absolute;
+      top: -8px;
+      right: -10px;
+      background: red;
+      color: white;
+      font-size: 0.8rem;
+      border-radius: 50%;
+      padding: 2px 7px;
+      display: none;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    /* Search input and button */
+    #searchInput {
+      padding: 8px 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 8px;
+      width: 260px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    #searchInput:focus {
+      border-color: #40739e;
+      box-shadow: 0 0 6px #40739e;
+    }
+
+    header button {
+      padding: 8px 16px;
+      font-size: 1rem;
+      background-color: #40739e;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    header button:hover {
+      background-color: #273c75;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 36px auto;
+      padding: 24px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(44, 62, 80, 0.10);
+    }
+
+    .btns {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .btns h2 {
+      flex: 1;
+      font-size: 1.5rem;
+      color: #353b48;
+    }
+
+    .btns button {
+      background: #44bd32;
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btns button:hover {
+      background: #4cd137;
+    }
+
+    .btns a {
+      margin-left: auto;
+      background: #e84118;
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .btns a:hover {
+      background: #c23616;
+    }
+
+    hr {
+      margin: 22px 0;
+      border: none;
+      border-top: 2px solid #dcdde1;
+    }
+
+    /* Table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      background: #f9f9f9;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(99, 110, 114, 0.07);
+    }
+
+    thead {
+      background: #40739e;
+      color: #fff;
+    }
+
+    th, td {
+      padding: 13px 12px;
+      text-align: left;
+    }
+
+    th {
+      font-weight: 600;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #dcdde1;
+      transition: background 0.14s;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f1f2f6;
+    }
+
+    tbody tr:hover {
+      background: #dff9fb;
+    }
+
+    td {
+      font-size: 0.98rem;
+      color: #353b48;
+      vertical-align: middle;
+    }
+
+    td:last-child {
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        padding: 10px;
+      }
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead {
+        display: none;
+      }
+      tr {
+        margin-bottom: 16px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 1px 4px rgba(99, 110, 114, 0.10);
+        padding: 8px;
+      }
+      td {
+        padding: 10px;
+        position: relative;
+        min-height: 38px;
+      }
+      td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #718093;
+        display: block;
+        margin-bottom: 4px;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      background: #f5f6fa;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #dcdde1;
+      border-radius: 6px;
+    }
+
+    table td button {
+      margin: 2px 2px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.97rem;
+      font-weight: 500;
+      transition: background 0.16s, color 0.16s;
+      color: #fff;
+      user-select: none;
+    }
+
+ 
+    table td button:nth-child(1) {
+      background: #0097e6;
+    }
+    table td button:nth-child(1):hover {
+      background: #40739e;
+    }
+
+    table td button:nth-child(2) {
+      background: #e84118;
+    }
+    table td button:nth-child(2):hover {
+      background: #c23616;
+    }
+
+   
+    table td button:nth-child(3) {
+      background: #44bd32;
+    }
+    table td button:nth-child(3):hover {
+      background: #4cd137;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <h1>Admin Dashboard</h1>
+
+    </div>
+    <div>
+      <input type="text" id="searchInput" placeholder= >
+      <button onclick="filterColleges()">Search</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="btns">
+      <h2>Manage Colleges</h2>
+      <button onclick="window.location.href='view_all_applications.php?college_id=${college.id}'">View Applications</button>
+      <button onclick="window.location.href='college.register.php'">Add College</button>
+      <a href="http://localhost/6thsem_project/admin/admin_login.html">Logout</a>
+    </div>
+    <hr/>
+
+    <table>
+      <thead>
+        <tr>
+          <th>College Name</th>
+          <th>Course</th>
+          <th>University</th>
+          <th>Location (City)</th>
+          <th>Phone Number</th>
+          <th>Duration (Years)</th>
+          <th>Scholarships</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="college-table"></tbody>
+    </table>
+
+    <script>
+      let colleges = [];
+
+      function loadColleges() {
+        fetch('admin_dashboard.php')
+          .then(res => res.json())
+          .then(data => {
+            colleges = data;
+            displayColleges(colleges);
+          })
+          .catch(error => console.error("Error fetching colleges:", error));
+      }
+
+      function displayColleges(data) {
+        const tableBody = document.getElementById("college-table");
+        tableBody.innerHTML = "";
+        data.forEach((college, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td data-label="College Name">${college.name}</td>
+            <td data-label="Course">${college.course}</td>
+            <td data-label="University">${college.university}</td>
+            <td data-label="Location">${college.location}</td>
+            <td data-label="Phone Number">${college.phone_number}</td>
+            <td data-label="Duration">${college.duration}</td>
+            <td data-label="Scholarships">${college.scholarships || "None"}</td>
+            <td data-label="Description">${college.description}</td>
+            <td data-label="Actions">
+              <button onclick="editCollege(${index})">Edit</button>
+              <button onclick="deleteCollege(${index})">Delete</button>
+              <button onclick="window.location.href='view_applications.php?college_id=${college.id}'">View Applications</button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+
+      function filterColleges() {
+        const query = document.getElementById("searchInput").value.toLowerCase();
+        const filtered = colleges.filter(c => c.name.toLowerCase().includes(query));
+        displayColleges(filtered);
+      }
+
+      function editCollege(index) {
+        const college = colleges[index];
+        window.location.href = `college.register.php?id=${college.id}`;
+      }
+
+      function deleteCollege(index) {
+        const college = colleges[index];
+        if (confirm(`Delete ${college.name}?`)) {
+          fetch(`deleteCollege.php?id=${college.id}`)
+            .then(res => res.json())
+            .then(data => {
+              alert(data.message);
+              if (data.success) {
+                loadColleges();
+                loadNotifications(); // Refresh notification count in case apps deleted
+              }
+            })
+            .catch(error => console.error("Error deleting college:", error));
+        }
+      }
+
+      function loadNotifications() {
+        fetch('get_pending_applications_count.php')
+          .then(res => res.json())
+          .then(data => {
+            const countSpan = document.getElementById("notify-count");
+            if (data.count > 0) {
+              countSpan.textContent = data.count;
+              countSpan.style.display = 'inline-block';
+            } else {
+              countSpan.style.display = 'none';
+            }
+          })
+          .catch(error => console.error("Error fetching notification count:", error));
+      }
+
+      window.onload = () => {
+        loadColleges();
+        loadNotifications();
+      };
+    </script>
+  </main>
+</body>
+</html>

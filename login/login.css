@@ -1,0 +1,112 @@
+/* Reset default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body and background */
+body, html {
+  height: 100%;
+  width: 100%;
+  font-family: 'Arial', sans-serif;
+  background: url('registertation background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Header */
+h1 {
+  font-size: 36px;
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+/* Login form */
+form {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Input fields */
+input[type="email"],
+input[type="password"] {
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #333;
+}
+
+/* Input focus */
+input:focus {
+  outline: none;
+  box-shadow: 0 0 5px #4caf50;
+}
+
+/* Options section */
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.options a {
+  color: #4caf50;
+  text-decoration: none;
+}
+
+.options a:hover {
+  color: #66bb6a;
+}
+
+/* Submit button */
+button {
+  padding: 12px;
+  font-size: 16px;
+  background: linear-gradient(to right, #4caf50, #43a047);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: linear-gradient(to right, #388e3c, #2e7d32);
+}
+
+/* Register link */
+.register-link {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.register-link a {
+  color: #4caf50;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.register-link a:hover {
+  color: #66bb6a;
+}
+
+/* Error message */
+.error {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+}

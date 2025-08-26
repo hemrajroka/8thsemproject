@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="login.css">
+   
+</head>
+
+<body>
+    
+    <div class="login-card">
+        <h1>Welcome to Login</h1>
+        <form id="login-form" action="login.php" method="POST">
+            <input id="email" type="email" name="email" placeholder="Enter your email" required >
+            <input id="password" type="password" placeholder="Enter your password" required name="password">
+            <div class="options">
+                <label>
+                    <input type="checkbox"> Remember me
+                </label>
+                
+            </div>
+            <button type="submit">Log In</button>
+        </form>
+        <p class="register-link">
+            Don't have an account? 
+            <a href="../student_register/student_register.html">Register</a>
+        </p>
+        <p class="error"></p>
+    </div>
+    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputElements = document.querySelectorAll('input');
+            inputElements.forEach(input => {
+                input.addEventListener('input', errorRemove);
+            });
+
+            function errorRemove() {
+                document.querySelector('.error').innerHTML = " ";
+            }
+
+            document.getElementById("password").addEventListener("keyup", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    login(event);
+                }
+            });
+
+            document.getElementById("login-form").addEventListener("submit", login);
+
+            // }
+        });
+    </script>
+</body>
+
+</html>
