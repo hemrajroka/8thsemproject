@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $user = $adminResult->fetch_assoc();
         if (password_verify($password, $user['password'])) {
             $_SESSION['adminID'] = $user['id']; 
-            header("Location: /6thsem_project/admin/admin_dashboard.html");
+            header("Location: /8thsem_project/admin/admin_dashboard.html");
             exit();
         } else {
             echo "Invalid username or password.";

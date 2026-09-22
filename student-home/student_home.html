@@ -1,248 +1,1006 @@
+<?php
+
+session_start();
+
+if (!isset($_SESSION['student_id'])) {
+    header("Location: ../login/login.html");
+    exit();
+}
+
+$studentName = $_SESSION['fullname'] ?? 'Student';
+
+?>
+
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Student Home - Recommended Colleges</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f6f8;
-      color: #333;
-      display: flex;
-    }
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Portal</title>
+
+
+<style>
+
+/* =========================================================
+   GENERAL
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    font-family:
+        'Segoe UI',
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
+
+    background: #f4f7fb;
+
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+
+    position: fixed;
+
+    left: 0;
+    top: 0;
+
+    width: 240px;
+    height: 100vh;
+
+    background: #1c3a66;
+
+    color: white;
+
+    padding-top: 25px;
+
+}
+
+.sidebar h2 {
+
+    text-align: center;
+
+    margin-bottom: 30px;
+
+}
+
+.sidebar a {
+
+    display: block;
+
+    color: white;
+
+    text-decoration: none;
+
+    padding: 15px 25px;
+
+    transition: 0.3s;
+
+}
+
+.sidebar a:hover {
+
+    background: #2a4da7;
+
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.main {
+
+    margin-left: 240px;
+
+    min-height: 100vh;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+
+    background: white;
+
+    padding: 20px 30px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.08);
+
+}
+
+.header h1 {
+
+    margin: 0;
+
+    color: #1c3a66;
+
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.content {
+
+    padding: 30px;
+
+}
+
+.welcome {
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 10px;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.08);
+
+}
+
+.welcome h2 {
+
+    margin-top: 0;
+
+    color: #1c3a66;
+
+}
+
+
+/* =========================================================
+   CHAT BUTTON
+========================================================= */
+
+#chat-toggle {
+
+    position: fixed;
+
+    right: 25px;
+    bottom: 25px;
+
+    width: 62px;
+    height: 62px;
+
+    border-radius: 50%;
+
+    border: none;
+
+    background: #1c3a66;
+
+    color: white;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,0.25);
+
+    z-index: 9999;
+
+}
+
+#chat-toggle:hover {
+
+    background: #2a4da7;
+
+}
+
+
+/* =========================================================
+   CHAT WINDOW
+========================================================= */
+
+#chat-container {
+
+    position: fixed;
+
+    right: 25px;
+    bottom: 100px;
+
+    width: 380px;
+
+    height: 550px;
+
+    background: white;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 5px 25px rgba(0,0,0,0.25);
+
+    overflow: hidden;
+
+    display: none;
+
+    flex-direction: column;
+
+    z-index: 9998;
+
+}
+
+
+/* =========================================================
+   CHAT HEADER
+========================================================= */
+
+#chat-header {
+
+    background: #1c3a66;
+
+    color: white;
+
+    padding: 17px;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================================================
+   CHAT BODY
+========================================================= */
+
+#chat-body {
+
+    flex: 1;
+
+    padding: 15px;
+
+    overflow-y: auto;
+
+    background: #f4f7fb;
+
+}
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.message {
+
+    max-width: 85%;
+
+    padding: 10px 13px;
+
+    margin-bottom: 10px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    word-wrap: break-word;
+
+}
+
+.message.bot {
+
+    background: white;
+
+    color: #222;
+
+    border: 1px solid #ddd;
+
+    margin-right: auto;
+
+}
+
+.message.user {
+
+    background: #1c3a66;
+
+    color: white;
+
+    margin-left: auto;
+
+}
+
+
+/* =========================================================
+   CHAT FOOTER
+========================================================= */
+
+#chat-footer {
+
+    display: flex;
+
+    padding: 10px;
+
+    background: white;
+
+    border-top: 1px solid #ddd;
+
+}
+
+#chat-input {
+
+    flex: 1;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+
+    padding: 11px;
+
+    outline: none;
+
+    font-size: 14px;
+
+}
+
+#chat-input:focus {
+
+    border-color: #1c3a66;
+
+}
+
+#send-btn {
+
+    margin-left: 8px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 0 17px;
+
+    background: #1c3a66;
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+#send-btn:hover {
+
+    background: #2a4da7;
+
+}
+
+
+/* =========================================================
+   RECOMMENDATION CARD
+========================================================= */
+
+.recommendation-card {
+
+    background: white;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    padding: 12px;
+
+    margin-top: 10px;
+
+}
+
+.recommendation-card h3 {
+
+    color: #1c3a66;
+
+    margin-top: 0;
+
+    margin-bottom: 8px;
+
+}
+
+.recommendation-card p {
+
+    margin: 5px 0;
+
+    font-size: 13px;
+
+}
+
+.match-score {
+
+    color: #1c3a66;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
 
     .sidebar {
-      width: 220px;
-      background-color: #1c3a66;
-      height: 100vh;
-      padding-top: 1rem;
-      position: fixed;
-      left: 0;
-      top: 0;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-      z-index: 100;
+
+        width: 190px;
+
     }
 
-    .sidebar a {
-      text-decoration: none;
-      color: #f7b733;
-      font-weight: 500;
-      padding: 0.75rem 1rem;
-      display: block;
-      transition: background 0.2s ease;
+    .main {
+
+        margin-left: 190px;
+
     }
 
-    .sidebar a:hover {
-      background-color: #274c87;
+    #chat-container {
+
+        right: 10px;
+
+        bottom: 90px;
+
+        width: calc(100% - 20px);
+
+        height: 520px;
+
     }
 
-    header {
-      position: fixed;
-      top: 0;
-      left: 220px;
-      right: 0;
-      height: 48px;
-      background-color: #1c3a66;
-      color: #f7b733;
-      padding: 0.6rem 1rem;
-      font-size: 1.3rem;
-      font-weight: 700;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-      display: flex;
-      align-items: center;
-      z-index: 101;
-    }
+}
 
-    main {
-      margin-left: 220px;
-      padding: 2rem;
-      padding-top: calc(48px + 2rem);
-      width: calc(100% - 220px);
-      max-width: 1200px;
-      box-sizing: border-box;
-    }
+</style>
 
-    h2 {
-      color: #274c87;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-
-    .grid-table {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-
-    .college-card {
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 1rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: box-shadow 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .college-card:hover {
-      box-shadow: 0 8px 15px rgba(247, 183, 51, 0.4);
-    }
-
-    .college-card h3 {
-      margin: 0 0 0.6rem 0;
-      color: #1c3a66;
-      font-size: 1.2rem;
-    }
-
-    .college-info-label {
-      font-weight: 600;
-      color: #274c87;
-    }
-
-    .college-info-value {
-      margin-left: 4px;
-      font-weight: 400;
-      color: #333;
-    }
-
-    .actions {
-      margin-top: auto;
-      display: flex;
-      gap: 0.6rem;
-      justify-content: center;
-    }
-
-    button {
-      padding: 10px 16px;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-    }
-
-    .view-btn {
-      background-color: #1c3a66;
-      color: #fff;
-    }
-
-    .view-btn:hover {
-      background-color: #274c87;
-    }
-
-    .apply-btn {
-      background-color: #f7b733;
-      color: #1c3a66;
-    }
-
-    .apply-btn:hover {
-      background-color: #e6a600;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 180px;
-      }
-
-      header {
-        left: 180px;
-      }
-
-      main {
-        margin-left: 180px;
-        padding: 1rem;
-      }
-
-      .grid-table {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
 </head>
+
+
 <body>
 
-  <div class="sidebar">
-    <a href="/6thsem_project/student-home/applications.php">Application Status</a>
-    <a href="/6thsem_project/student-home/view_all_colleges.php">All colleges</a>
-    <a href="/6thsem_project/student-home/view_other_universities.php">Universities</a>
-    <a href="/6thsem_project/student-home/profile_update.php">Profile</a>
-    <a href="/6thsem_project/login/login.html">Logout</a>
-  </div>
 
-  <header>
-    <h1>Student Portal</h1>
-  </header>
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
 
-  <main>
-    <div class="grid-table" id="college-list">
-      <p>Loading recommendations...</p>
+<div class="sidebar">
+
+    <h2>Student Portal</h2>
+
+    <a href="/8thsem_project/student-home/applications.php">
+        Applications
+    </a>
+
+    <a href="/8thsem_project/student-home/view_all_colleges.php">
+        All Colleges
+    </a>
+
+    <a href="/8thsem_project/student-home/view_other_universities.php">
+        Other Universities
+    </a>
+
+    <a href="/8thsem_project/student-home/profile_update.php">
+        Profile
+    </a>
+
+    <a href="/8thsem_project/login/login.html">
+        Logout
+    </a>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<div class="main">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>Student Portal</h1>
+
     </div>
-  </main>
 
-  <script>
-    function viewDetails(collegeId) {
-      window.location.href = `/6thsem_project/student-home/view_college_details.php?id=${collegeId}`;
+
+    <!-- CONTENT -->
+
+    <div class="content">
+
+
+        <div class="welcome">
+
+            <h2>
+                Welcome,
+                <?php echo htmlspecialchars($studentName); ?>
+            </h2>
+
+            <p>
+                Use the chatbot below to find colleges based on your
+                preferred course, university and location.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CHAT BUTTON
+===================================================== -->
+
+<button id="chat-toggle" title="Open Chatbot">
+
+    💬
+
+</button>
+
+
+<!-- =====================================================
+     CHAT WINDOW
+===================================================== -->
+
+<div id="chat-container">
+
+
+    <div id="chat-header">
+
+        College Recommendation Assistant
+
+    </div>
+
+
+    <div id="chat-body">
+
+        <div class="message bot">
+
+            Hello
+            <?php echo htmlspecialchars($studentName); ?>! 👋
+
+            <br><br>
+
+            I can help you find suitable colleges.
+
+            <br><br>
+
+            What course are you interested in?
+
+        </div>
+
+    </div>
+
+
+    <div id="chat-footer">
+
+        <input
+            type="text"
+            id="chat-input"
+            placeholder="Type your message..."
+            autocomplete="off"
+        >
+
+        <button id="send-btn">
+            Send
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const chatToggle =
+    document.getElementById("chat-toggle");
+
+const chatContainer =
+    document.getElementById("chat-container");
+
+const chatInput =
+    document.getElementById("chat-input");
+
+const sendBtn =
+    document.getElementById("send-btn");
+
+const chatBody =
+    document.getElementById("chat-body");
+
+
+/* =========================================================
+   OPEN / CLOSE CHAT
+========================================================= */
+
+chatToggle.addEventListener("click", function () {
+
+    if (
+        chatContainer.style.display === "none" ||
+        chatContainer.style.display === ""
+    ) {
+
+        chatContainer.style.display = "flex";
+
+        chatInput.focus();
+
+    } else {
+
+        chatContainer.style.display = "none";
+
     }
 
-    function applyForCollege(collegeId) {
-      window.location.href = `/6thsem_project/student-home/apply_college.php?college_id=${collegeId}`;
+});
+
+
+/* =========================================================
+   SEND MESSAGE
+========================================================= */
+
+function sendMessage() {
+
+    const message =
+        chatInput.value.trim();
+
+
+    if (message === "") {
+
+        return;
+
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const container = document.getElementById("college-list");
 
-      function fetchRecommendations() {
-        container.innerHTML = "<p>Loading recommendations...</p>";
+    /*
+    ---------------------------------------------
+    SHOW USER MESSAGE
+    ---------------------------------------------
+    */
 
-        fetch('/6thsem_project/student-home/recommend_colleges.php')
-          .then(response => {
-            if (!response.ok) throw new Error("Network response was not ok");
-            return response.json();
-          })
-          .then(data => {
-            if (data.length > 0) {
-              container.innerHTML = ''; // clear loading
+    addMessage(
+        message,
+        "user"
+    );
 
-              data.forEach(college => {
-                const card = document.createElement("div");
-                card.className = "college-card";
 
-                card.innerHTML = `
-                  <h3>${college.name}</h3>
-                  <div><span class="college-info-label">Course:</span><span class="college-info-value">${college.course}</span></div>
-                  <div><span class="college-info-label">University:</span><span class="college-info-value">${college.university}</span></div>
-                  <div><span class="college-info-label">Location:</span><span class="college-info-value">${college.location}</span></div>
-                  <div><span class="college-info-label">Phone:</span><span class="college-info-value">${college.phone_number}</span></div>
-                  <div><span class="college-info-label">Scholarships:</span><span class="college-info-value">${college.scholarships}</span></div>
-                  <div><span class="college-info-label">Duration:</span><span class="college-info-value">${college.duration}</span></div>
-                  <div><span class="college-info-label">Match:</span><span class="college-info-value">${(college.similarity * 100).toFixed(1)}%</span></div>
-                  <div class="actions">
-                    <button class="view-btn" onclick="viewDetails(${college.id})">View Details</button>
-                    <button class="apply-btn" onclick="applyForCollege(${college.id})">Apply Now</button>
-                  </div>
-                `;
+    /*
+    ---------------------------------------------
+    CLEAR INPUT
+    ---------------------------------------------
+    */
 
-                container.appendChild(card);
-              });
-            } else {
-              container.innerHTML = "<p>No recommended colleges found.</p>";
-            }
-          })
-          .catch(error => {
-            container.innerHTML = "Error loading data: " + error.message;
-          });
-      }
+    chatInput.value = "";
 
-      fetchRecommendations();
+
+    /*
+    ---------------------------------------------
+    DISABLE BUTTON
+    ---------------------------------------------
+    */
+
+    sendBtn.disabled = true;
+
+
+    /*
+    ---------------------------------------------
+    SEND TO PHP
+    ---------------------------------------------
+    */
+
+    fetch("chatbot.php", {
+
+        method: "POST",
+
+        headers: {
+
+            "Content-Type":
+                "application/x-www-form-urlencoded"
+
+        },
+
+        body:
+            "message=" +
+            encodeURIComponent(message)
+
+    })
+
+    .then(function(response) {
+
+        return response.json();
+
+    })
+
+    .then(function(data) {
+
+
+        /*
+        -----------------------------------------
+        BOT RESPONSE
+        -----------------------------------------
+        */
+
+        if (data.reply) {
+
+            addMessage(
+                data.reply,
+                "bot"
+            );
+
+        }
+
+
+        /*
+        -----------------------------------------
+        RECOMMENDATIONS
+        -----------------------------------------
+        */
+
+        if (
+            data.recommendations &&
+            data.recommendations.length > 0
+        ) {
+
+            data.recommendations.forEach(
+                function(college) {
+
+                    const card =
+                        document.createElement("div");
+
+                    card.className =
+                        "message bot";
+
+
+                    const name =
+                        escapeHTML(
+                            college.name
+                        );
+
+                    const course =
+                        escapeHTML(
+                            college.course
+                        );
+
+                    const university =
+                        escapeHTML(
+                            college.university
+                        );
+
+                    const location =
+                        escapeHTML(
+                            college.location
+                        );
+
+                    const duration =
+                        escapeHTML(
+                            college.duration ||
+                            "N/A"
+                        );
+
+                    const scholarships =
+                        escapeHTML(
+                            college.scholarships ||
+                            "N/A"
+                        );
+
+
+                    card.innerHTML = `
+
+                        <div class="recommendation-card">
+
+                            <h3>
+                                ${name}
+                            </h3>
+
+                            <p>
+                                <strong>
+                                    Course:
+                                </strong>
+                                ${course}
+                            </p>
+
+                            <p>
+                                <strong>
+                                    University:
+                                </strong>
+                                ${university}
+                            </p>
+
+                            <p>
+                                <strong>
+                                    Location:
+                                </strong>
+                                ${location}
+                            </p>
+
+                            <p>
+                                <strong>
+                                    Duration:
+                                </strong>
+                                ${duration}
+                            </p>
+
+                            <p>
+                                <strong>
+                                    Scholarship:
+                                </strong>
+                                ${scholarships}
+                            </p>
+
+                            <p class="match-score">
+                                Match Score:
+                                ${college.score}%
+                            </p>
+
+                        </div>
+
+                    `;
+
+
+                    chatBody.appendChild(card);
+
+
+                    /*
+                    ---------------------------------
+                    SCROLL TO BOTTOM
+                    ---------------------------------
+                    */
+
+                    chatBody.scrollTop =
+                        chatBody.scrollHeight;
+
+                }
+            );
+
+        }
+
+    })
+
+    .catch(function(error) {
+
+        console.error(
+            "Chatbot Error:",
+            error
+        );
+
+
+        addMessage(
+            "Sorry, something went wrong. Please try again.",
+            "bot"
+        );
+
+    })
+
+    .finally(function() {
+
+        sendBtn.disabled = false;
+
+        chatInput.focus();
+
     });
-  </script>
+
+}
+
+
+/* =========================================================
+   SEND BUTTON
+========================================================= */
+
+sendBtn.addEventListener(
+    "click",
+    sendMessage
+);
+
+
+/* =========================================================
+   ENTER KEY SEND
+========================================================= */
+
+chatInput.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   ADD MESSAGE
+========================================================= */
+
+function addMessage(
+    message,
+    sender
+) {
+
+    const messageDiv =
+        document.createElement("div");
+
+
+    messageDiv.className =
+        "message " + sender;
+
+
+    messageDiv.innerHTML =
+        message;
+
+
+    chatBody.appendChild(
+        messageDiv
+    );
+
+
+    /*
+    ---------------------------------------------
+    SCROLL TO BOTTOM
+    ---------------------------------------------
+    */
+
+    chatBody.scrollTop =
+        chatBody.scrollHeight;
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(text) {
+
+    if (
+        text === null ||
+        text === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    const div =
+        document.createElement("div");
+
+
+    div.textContent =
+        text;
+
+
+    return div.innerHTML;
+
+}
+
+</script>
+
 
 </body>
+
 </html>

@@ -122,7 +122,7 @@
 
       const formData = new FormData(form);
 
-      fetch('/6thsem_project/student-home/submit_application.php', {
+      fetch('/8thsem_project/student-home/submit_application.php', {
         method: 'POST',
         body: formData,
       })
@@ -130,7 +130,7 @@
       .then(data => {
         if (data.success) {
           alert(data.message);
-          window.location.href = '/6thsem_project/student-home/student_home.html';
+          window.location.href = '/8thsem_project/student-home/student_home.html';
         } else {
           alert('Error: ' + data.message);
         }

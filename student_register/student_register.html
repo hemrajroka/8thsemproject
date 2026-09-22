@@ -4,15 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Student Registration</title>
+
   <style>
-  body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #d4edda; /* Light green background */
-  margin: 0; padding: 20px;
-  display: flex; justify-content: center; align-items: flex-start;
-  min-height: 100vh;
-  color: #222;
-}
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #d4edda;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      color: #222;
+    }
 
     .form-wrapper {
       background: #ffffff;
@@ -23,32 +31,44 @@
       width: 100%;
       border: 2px solid #3a6ed8;
     }
+
     h1 {
       text-align: center;
       margin-bottom: 25px;
       color: #2a4da7;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      font-size: 28px;
+      font-weight: 700;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
+
     label {
       font-weight: 700;
       margin-top: 15px;
       display: block;
       color: #2a4da7;
     }
+
     input[type="text"],
     input[type="email"],
     input[type="password"],
     select {
       width: 100%;
-      padding: 10px 12px;
+      padding: 11px 12px;
       margin-top: 6px;
       border-radius: 8px;
       border: 1.8px solid #9bbcff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       font-size: 1rem;
-      background-color: transparent; /* No color fill */
+      background-color: #f8fbff;
       color: #222;
-      transition: border-color 0.3s ease;
+      transition: 0.3s ease;
     }
+
+    input::placeholder {
+      color: #777;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
     input[type="text"]:focus,
     input[type="email"]:focus,
     input[type="password"]:focus,
@@ -56,40 +76,9 @@
       outline: none;
       border-color: #3a6ed8;
       box-shadow: 0 0 8px rgba(58, 110, 216, 0.3);
-      background-color: transparent;
+      background-color: #ffffff;
     }
-    #course-checkboxes {
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    #course-checkboxes input[type="checkbox"] {
-      display: none;
-    }
-    #course-checkboxes label {
-      cursor: pointer;
-      user-select: none;
-      background: #d0dbff;
-      padding: 9px 16px;
-      border-radius: 10px;
-      border: 2px solid transparent;
-      font-weight: 600;
-      color: #2a4da7;
-      transition: all 0.25s ease;
-      flex: 1 1 40%;
-      text-align: center;
-    }
-    #course-checkboxes input[type="checkbox"]:checked + label {
-      background: #2a4da7;
-      color: #fff;
-      border-color: #1c368f;
-      box-shadow: 0 4px 12px rgba(42, 77, 167, 0.5);
-    }
-    #course-checkboxes label:hover {
-      background-color: #a8bfff;
-      color: #17306f;
-    }
+
     button {
       margin-top: 30px;
       width: 100%;
@@ -97,147 +86,183 @@
       background-color: #2a4da7;
       border: none;
       color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       font-size: 1.15rem;
       border-radius: 12px;
       cursor: pointer;
       font-weight: 700;
       box-shadow: 0 6px 15px rgba(42, 77, 167, 0.6);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      transition: 0.3s ease;
     }
+
     button:hover {
       background-color: #1c368f;
       box-shadow: 0 8px 20px rgba(28, 54, 143, 0.8);
+      transform: translateY(-1px);
     }
+
+    button:active {
+      transform: translateY(0);
+    }
+
     @media (max-width: 480px) {
-      #course-checkboxes label {
-        flex: 1 1 100%;
-      }
       .form-wrapper {
         padding: 20px 15px;
+      }
+
+      h1 {
+        font-size: 24px;
       }
     }
   </style>
 </head>
+
 <body>
+
   <div class="form-wrapper">
+
     <h1>Student Registration</h1>
+
     <form id="student-form">
-      <input type="text" id="fullname" placeholder="Full Name" required />
+
+      <input
+        type="text"
+        id="fullname"
+        placeholder="Full Name"
+        required
+      />
 
       <label for="gender">Gender</label>
+
       <select id="gender" required>
         <option value="" disabled selected>Select Gender</option>
-        <option>Male</option>
-        <option>Female</option>
-        <option>Other</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
       </select>
 
-      <input type="email" id="email" placeholder="Email Address" required />
-      <input type="text" id="city" placeholder="City" />
+      <input
+        type="email"
+        id="email"
+        placeholder="Email Address"
+        required
+      />
 
-      <input type="password" id="password" placeholder="Password" required />
-      <input type="password" id="confirm_password" placeholder="Confirm Password" required />
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        required
+      />
 
-      <label for="qualification">Highest Qualification</label>
-      <select id="qualification" required>
-        <option value="" disabled selected>Select Qualification</option>
-        <option>+2</option>
-      </select>
-
-      <label for="university">University</label>
-      <select id="university" required>
-        <option value="" disabled selected>Select University</option>
-        <option>Tribhuvan University</option>
-        <option>Pokhara University</option>
-        <option>Kathmandu University</option>
-        <option>Purbanchal University</option>
-      </select>
-
-      <label>Course (select one or more)</label>
-      <div id="course-checkboxes">
-        <input type="checkbox" id="c1" name="course" value="BCA" />
-        <label for="c1">BCA</label>
-
-        <input type="checkbox" id="c2" name="course" value="BSc CSIT" />
-        <label for="c2">BSc CSIT</label>
-
-        <input type="checkbox" id="c3" name="course" value="BIT" />
-        <label for="c3">BIT</label>
-
-        <input type="checkbox" id="c4" name="course" value="BBA" />
-        <label for="c4">BBA</label>
-
-        <input type="checkbox" id="c5" name="course" value="BBS" />
-        <label for="c5">BBS</label>
-
-        <input type="checkbox" id="c6" name="course" value="BIM" />
-        <label for="c6">BIM</label>
-
-        <input type="checkbox" id="c7" name="course" value="BHM" />
-        <label for="c7">BHM</label>
-
-        <input type="checkbox" id="c8" name="course" value="BASW" />
-        <label for="c8">BASW</label>
-      </div>
+      <input
+        type="password"
+        id="confirm_password"
+        placeholder="Confirm Password"
+        required
+      />
 
       <button type="submit">Register</button>
+
     </form>
+
   </div>
 
+
   <script>
+
     document.getElementById("student-form").addEventListener("submit", function(event) {
+
       event.preventDefault();
 
-      const fullname = document.getElementById('fullname').value.trim();
-      const gender = document.getElementById('gender').value;
-      const email = document.getElementById('email').value.trim();
-      const city = document.getElementById('city').value.trim();
-      const password = document.getElementById('password').value;
-      const confirm_password = document.getElementById('confirm_password').value;
-      const qualification = document.getElementById('qualification').value;
-      const university = document.getElementById('university').value;
+      const fullname =
+        document.getElementById("fullname").value.trim();
 
-      const checkedCourses = Array.from(document.querySelectorAll('#course-checkboxes input[name="course"]:checked'))
-                                  .map(cb => cb.value);
+      const gender =
+        document.getElementById("gender").value;
 
-      if (checkedCourses.length === 0) {
-        alert("Please select at least one course.");
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      const confirm_password =
+        document.getElementById("confirm_password").value;
+
+
+      if (fullname === "") {
+        alert("Please enter your full name.");
         return;
       }
+
+
+      if (gender === "") {
+        alert("Please select your gender.");
+        return;
+      }
+
+
+      if (email === "") {
+        alert("Please enter your email.");
+        return;
+      }
+
+
+      if (password === "") {
+        alert("Please enter your password.");
+        return;
+      }
+
 
       if (password !== confirm_password) {
         alert("Passwords do not match.");
         return;
       }
 
+
       const formData = new FormData();
+
       formData.append("fullname", fullname);
       formData.append("gender", gender);
       formData.append("email", email);
-      formData.append("city", city);
       formData.append("password", password);
-      formData.append("qualification", qualification);
-      formData.append("university", university);
-      formData.append("course", JSON.stringify(checkedCourses));
+
 
       fetch("student_register.php", {
         method: "POST",
         body: formData
       })
+
       .then(res => res.json())
+
       .then(data => {
+
         if (data.success) {
+
           alert(data.message);
+
           window.location.href = "../login/login.html";
+
         } else {
+
           alert(data.message);
+
         }
+
       })
+
       .catch(err => {
+
         console.error(err);
+
         alert("An error occurred while submitting the form.");
+
       });
+
     });
+
   </script>
+
 </body>
 </html>

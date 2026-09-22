@@ -73,11 +73,11 @@ $college = $result->fetch_assoc();
     }
     </style>
     <div class="sidebar">
-      <a href="/6thsem_project/student-home/student_home.html">Recommendations</a>
-    <a href="/6thsem_project/student-home/applications.php">Application Status</a>
-    <a href="/6thsem_project/student-home/view_all_colleges.php">All colleges</a>
-    <a href="/6thsem_project/student-home/view_other_universities.php">Universities</a>
-    <a href="/6thsem_project/student-home/profile_update.php">Profile</a>
+      <a href="/8thsem_project/student-home/student_home.html">Recommendations</a>
+    <a href="/8thsem_project/student-home/applications.php">Application Status</a>
+    <a href="/8thsem_project/student-home/view_all_colleges.php">All colleges</a>
+    <a href="/8thsem_project/student-home/view_other_universities.php">Universities</a>
+    <a href="/8thsem_project/student-home/profile_update.php">Profile</a>
     
   </div>
   
@@ -92,7 +92,7 @@ $college = $result->fetch_assoc();
    
     <p><strong>Description:</strong> <?php echo nl2br($college['description'] ?? 'No description provided.'); ?></p>
 
-    <br><a href="student_home.html">← Back to Recommendations</a>
+    
   </div>
 </body>
 </html>

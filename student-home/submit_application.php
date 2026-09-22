@@ -1,89 +1,319 @@
 <?php
+
 session_start();
+
 require('../db_connection/db_connection.php');
 
-if (!isset($_SESSION['studentID'])) {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+header('Content-Type: application/json');
+
+
+/*
+|--------------------------------------------------------------------------
+| Check Student Login
+|--------------------------------------------------------------------------
+*/
+
+if (!isset($_SESSION['student_id'])) {
+
+    echo json_encode([
+        'success' => false,
+        'message' => 'Unauthorized. Please login again.'
+    ]);
+
     exit();
 }
 
-$studentID = $_SESSION['studentID'];
+$studentID = (int) $_SESSION['student_id'];
+
+
+/*
+|--------------------------------------------------------------------------
+| Get Form Data
+|--------------------------------------------------------------------------
+*/
 
 $collegeId = $_POST['college_id'] ?? '';
 $entranceRank = $_POST['entrance_rank'] ?? '';
-$course = $_POST['applied_course'] ?? '';
-$backgroundFaculty = $_POST['plus_two_faculty'] ?? '';
+$course = trim($_POST['applied_course'] ?? '');
+$backgroundFaculty = trim($_POST['plus_two_faculty'] ?? '');
 
 
-if (empty($collegeId) || empty($entranceRank) || empty($course) || empty($backgroundFaculty)) {
-    echo json_encode(['success' => false, 'message' => 'All fields are required.']);
+/*
+|--------------------------------------------------------------------------
+| Validate Required Fields
+|--------------------------------------------------------------------------
+*/
+
+if (
+    empty($collegeId) ||
+    empty($entranceRank) ||
+    empty($course) ||
+    empty($backgroundFaculty)
+) {
+
+    echo json_encode([
+        'success' => false,
+        'message' => 'All fields are required.'
+    ]);
+
     exit();
 }
 
+$collegeId = (int) $collegeId;
+$entranceRank = (int) $entranceRank;
 
-$checkSql = "SELECT status FROM applications WHERE student_id = ? AND college_id = ? AND status != 'Rejected'";
+
+/*
+|--------------------------------------------------------------------------
+| Check Existing Application
+|--------------------------------------------------------------------------
+*/
+
+$checkSql = "
+    SELECT status
+    FROM applications
+    WHERE student_id = ?
+    AND college_id = ?
+    AND status != 'Rejected'
+";
+
 $checkStmt = $conn->prepare($checkSql);
+
 if (!$checkStmt) {
-    echo json_encode(['success' => false, 'message' => 'Database prepare error: ' . $conn->error]);
+
+    echo json_encode([
+        'success' => false,
+        'message' => 'Database prepare error: ' . $conn->error
+    ]);
+
     exit();
 }
-$checkStmt->bind_param("ii", $studentID, $collegeId);
+
+$checkStmt->bind_param(
+    "ii",
+    $studentID,
+    $collegeId
+);
+
 $checkStmt->execute();
+
 $checkStmt->store_result();
 
+
 if ($checkStmt->num_rows > 0) {
-    echo json_encode(['success' => false, 'message' => 'You already have a pending or approved application for this college. You cannot apply again unless your previous application is rejected.']);
+
+    echo json_encode([
+        'success' => false,
+        'message' =>
+            'You already have a pending or approved application for this college. ' .
+            'You cannot apply again unless your previous application is rejected.'
+    ]);
+
     $checkStmt->close();
     $conn->close();
+
     exit();
 }
+
 $checkStmt->close();
 
-// Handle file upload for marksheet
+
+/*
+|--------------------------------------------------------------------------
+| Upload Marksheet
+|--------------------------------------------------------------------------
+*/
+
 $uploadDir = "../uploads/";
+
 if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
+
+    if (!mkdir($uploadDir, 0755, true)) {
+
+        echo json_encode([
+            'success' => false,
+            'message' => 'Unable to create upload directory.'
+        ]);
+
+        exit();
+    }
 }
 
-if (isset($_FILES['marksheet']) && $_FILES['marksheet']['error'] === 0) {
-    $filename = basename($_FILES['marksheet']['name']);
-    $targetPath = $uploadDir . time() . "_" . $filename;
 
-    $allowedTypes = ['pdf', 'jpg', 'jpeg', 'png'];
-    $fileType = strtolower(pathinfo($targetPath, PATHINFO_EXTENSION));
+/*
+|--------------------------------------------------------------------------
+| Check Marksheet
+|--------------------------------------------------------------------------
+*/
 
-    if (!in_array($fileType, $allowedTypes)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid file type. Allowed: pdf, jpg, jpeg, png.']);
-        exit();
-    }
+if (
+    !isset($_FILES['marksheet']) ||
+    $_FILES['marksheet']['error'] !== UPLOAD_ERR_OK
+) {
 
-    if (!move_uploaded_file($_FILES['marksheet']['tmp_name'], $targetPath)) {
-        echo json_encode(['success' => false, 'message' => 'Failed to upload marksheet.']);
-        exit();
-    }
-    $filePath = $targetPath;
-} else {
-    echo json_encode(['success' => false, 'message' => 'Marksheet file is required.']);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Marksheet file is required.'
+    ]);
+
     exit();
 }
 
-$sql = "INSERT INTO applications (student_id, college_id, entrance_rank, course, background_faculty, marksheet_path) VALUES (?, ?, ?, ?, ?, ?)";
+
+$originalFilename = basename($_FILES['marksheet']['name']);
+
+$fileExtension = strtolower(
+    pathinfo($originalFilename, PATHINFO_EXTENSION)
+);
+
+
+$allowedTypes = [
+    'pdf',
+    'jpg',
+    'jpeg',
+    'png'
+];
+
+
+if (!in_array($fileExtension, $allowedTypes, true)) {
+
+    echo json_encode([
+        'success' => false,
+        'message' =>
+            'Invalid file type. Allowed: PDF, JPG, JPEG, PNG.'
+    ]);
+
+    exit();
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Generate Unique File Name
+|--------------------------------------------------------------------------
+*/
+
+$newFilename =
+    $studentID . '_' .
+    time() . '_' .
+    preg_replace(
+        '/[^a-zA-Z0-9._-]/',
+        '_',
+        $originalFilename
+    );
+
+
+$targetPath = $uploadDir . $newFilename;
+
+
+/*
+|--------------------------------------------------------------------------
+| Move Uploaded File
+|--------------------------------------------------------------------------
+*/
+
+if (
+    !move_uploaded_file(
+        $_FILES['marksheet']['tmp_name'],
+        $targetPath
+    )
+) {
+
+    echo json_encode([
+        'success' => false,
+        'message' => 'Failed to upload marksheet.'
+    ]);
+
+    exit();
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Save Application
+|--------------------------------------------------------------------------
+*/
+
+$sql = "
+    INSERT INTO applications
+    (
+        student_id,
+        college_id,
+        entrance_rank,
+        course,
+        background_faculty,
+        marksheet_path
+    )
+    VALUES (?, ?, ?, ?, ?, ?)
+";
+
+
 $stmt = $conn->prepare($sql);
 
+
 if (!$stmt) {
-    echo json_encode(['success' => false, 'message' => 'Database prepare error: ' . $conn->error]);
+
+    /*
+    | Delete uploaded file if database preparation fails
+    */
+
+    if (file_exists($targetPath)) {
+        unlink($targetPath);
+    }
+
+    echo json_encode([
+        'success' => false,
+        'message' =>
+            'Database prepare error: ' . $conn->error
+    ]);
+
     exit();
 }
 
-// Bind parameters and execute
-$stmt->bind_param("iiisss", $studentID, $collegeId, $entranceRank, $course, $backgroundFaculty, $filePath);
+
+$stmt->bind_param(
+    "iiisss",
+    $studentID,
+    $collegeId,
+    $entranceRank,
+    $course,
+    $backgroundFaculty,
+    $targetPath
+);
+
+
+/*
+|--------------------------------------------------------------------------
+| Execute
+|--------------------------------------------------------------------------
+*/
 
 if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'message' => 'Application submitted successfully.']);
+
+    echo json_encode([
+        'success' => true,
+        'message' => 'Application submitted successfully.'
+    ]);
+
 } else {
-    echo json_encode(['success' => false, 'message' => 'Database execute error: ' . $stmt->error]);
+
+    /*
+    | Delete uploaded file if database insert fails
+    */
+
+    if (file_exists($targetPath)) {
+        unlink($targetPath);
+    }
+
+    echo json_encode([
+        'success' => false,
+        'message' =>
+            'Database execute error: ' . $stmt->error
+    ]);
 }
+
 
 $stmt->close();
 $conn->close();
+
 ?>
